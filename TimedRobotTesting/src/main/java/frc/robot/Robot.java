@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +24,14 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+
+  final CANSparkMax leftWheel1 = new CANSparkMax(3, MotorType.kBrushless);
+  final CANSparkMax leftWheel2 = new CANSparkMax(4, MotorType.kBrushless);
+  final CANSparkMax rightWheel1 = new CANSparkMax(1, MotorType.kBrushless);
+  final CANSparkMax rightWheel2 = new CANSparkMax(2, MotorType.kBrushless);
+
+  final Joystick leftstick = new Joystick(0);
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -29,6 +41,10 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    rightWheel2.follow(rightWheel1);
+    leftWheel2.follow(leftWheel1);
+
   }
 
   /**
@@ -39,7 +55,18 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+      double Joystickx = 0.0; 
+      double Joysticky = 0.0;
+
+      Joystickx = leftstick.getRawAxis(1)*0.25      ; 
+      Joysticky = leftstick.getRawAxis(4)*0.25       ;
+      double leftspeed = Joystickx - Joysticky;
+      double rightspeeed = Joystickx + Joysticky; 
+
+      leftWheel1.set(leftspeed);
+      rightWheel1.set(rightspeeed);
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
