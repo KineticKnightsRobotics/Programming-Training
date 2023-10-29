@@ -4,6 +4,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +27,14 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  final CANSparkMax leftwheel1 = new CANSparkMax(3, MotorType.kBrushless);
+  final CANSparkMax leftwheel2 = new CANSparkMax(4, MotorType.kBrushless);
+  final CANSparkMax rightwheel1 = new CANSparkMax(1, MotorType.kBrushless);
+  final CANSparkMax rightwheel2 = new CANSparkMax(2, MotorType.kBrushless);
+  final Joystick joystick = new Joystick (0);
+  //final MotorControllerGroup leftside = new MotorControllerGroup(leftwheel1,leftwheel2);
+ // final MotorControllerGroup rightside = new MotorControllerGroup(rightwheel1,rightwheel2)
+  //final DifferentialDrive mydrive = new DifferentialDrive();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,6 +45,10 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+  rightwheel2. follow(rightwheel1);
+  leftwheel2. follow(leftwheel1);
+  
+
   }
 
   /**
@@ -39,7 +59,15 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    double joystickX, joystickY =0.0;
+    joystickY = joystick.getRawAxis(1)*.25;
+    joystickX = joystick.getRawAxis(4)*.25;
+    double leftspeed = joystickX - joystickY;
+    double rightspeed = joystickX + joystickY;
+    leftwheel1.set(leftspeed);
+    rightwheel1.set(rightspeed);
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
