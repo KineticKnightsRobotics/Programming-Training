@@ -4,10 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Joystick;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -19,7 +27,17 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  private final PWMSparkMax m_leftLeaderDrive = new PWMSparkMax(3 );
+  private final PWMSparkMax m_leftFollowerDrive = new PWMSparkMax(4);
+  private final PWMSparkMax m_rightLeaderDrive = new PWMSparkMax(1);
+  private final PWMSparkMax m_rightFollowerDrive = new PWMSparkMax(2);
+  private final DifferentialDrive m_leftDrive = new DifferentialDrive(m_leftFollowerDrive,m_leftLeaderDrive);
+  private final DifferentialDrive m_rightDrive  = new DifferentialDrive(m_rightFollowerDrive,m_rightLeaderDrive);
+  private final Timer m_timer = new Timer();
+  private final Joystick DriveJoystick = new Joystick(0); // 0 is the USB Port 
+  private final Joystick SteerJoystick = new Joystick(0); 
+  
+ 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -29,6 +47,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    m_rightLeaderDrive.setInverted(true);
   }
 
   /**
